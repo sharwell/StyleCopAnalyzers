@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Immutable;
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.Diagnostics;
 
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
@@ -36,8 +35,16 @@
             if (_handlers.IsDefaultOrEmpty)
                 return;
 
-            SyntaxTokenAnalyzer analyzer = new SyntaxTokenAnalyzer(context);
-            analyzer.DefaultVisit(context.Tree.GetRoot(context.CancellationToken));
+            Action<Diagnostic> reportDiagnostic = context.ReportDiagnostic;
+            SyntaxNode rootNode = context.Tree.GetRoot(context.CancellationToken);
+            foreach (var token in rootNode.DescendantTokens())
+            {
+                int tokenKind = token.RawKind;
+                if (tokenKind < 0 || tokenKind >= _handlers.Length)
+                    continue;
+
+                _handlers[tokenKind]?.Invoke(new SyntaxTokenAnalysisContext(token, context.Options, reportDiagnostic, context.CancellationToken));
+            }
         }
 
         internal static void RegisterSyntaxTokenAction(int syntaxKind, Action<SyntaxTokenAnalysisContext> action)
@@ -47,28 +54,6 @@
                 _handlers = _handlers.AddRange(ImmutableArray.Create(new Action<SyntaxTokenAnalysisContext>[gap]));
 
             _handlers = _handlers.SetItem(syntaxKind, _handlers[syntaxKind] - action + action);
-        }
-
-        private class SyntaxTokenAnalyzer : CSharpSyntaxWalker
-        {
-            private readonly SyntaxTreeAnalysisContext _context;
-            private readonly Action<Diagnostic> _reportDiagnostic;
-
-            public SyntaxTokenAnalyzer(SyntaxTreeAnalysisContext context)
-                : base(SyntaxWalkerDepth.Token)
-            {
-                _context = context;
-                _reportDiagnostic = context.ReportDiagnostic;
-            }
-
-            public override void VisitToken(SyntaxToken token)
-            {
-                int tokenKind = token.RawKind;
-                if (tokenKind < 0 || tokenKind >= _handlers.Length)
-                    return;
-
-                _handlers[tokenKind]?.Invoke(new SyntaxTokenAnalysisContext(token, _context.Options, _reportDiagnostic, _context.CancellationToken));
-            }
         }
     }
 }
