@@ -52,6 +52,15 @@
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
+            context.RegisterCompilationStartAction(HandleCompilationStart);
+        }
+
+        private void HandleCompilationStart(CompilationStartAnalysisContext context)
+        {
+            LanguageVersion? languageVersion = (context.Compilation as CSharpCompilation)?.LanguageVersion;
+            if (languageVersion < LanguageVersion.CSharp6)
+                return;
+
             context.RegisterSyntaxTreeAction(HandleSyntaxTree);
         }
 
