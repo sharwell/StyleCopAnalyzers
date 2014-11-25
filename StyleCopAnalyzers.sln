@@ -21,6 +21,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{15E1B864-3745-4FF5-BAB2-EC037FFE6938}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StyleCop.Analyzers.Templates.Wizard", "Templates\StyleCop.Analyzers.Templates.Wizard\StyleCop.Analyzers.Templates.Wizard.csproj", "{7B0D1DBF-59E4-4097-B6E5-A9481B65614D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StyleCop.Analyzers.Templates.DiagnosticAnalyzerTemplate", "Templates\StyleCop.Analyzers.Templates.DiagnosticAnalyzerTemplate\StyleCop.Analyzers.Templates.DiagnosticAnalyzerTemplate.csproj", "{80371605-E986-4937-B822-E8C39C0AF9CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,8 +45,20 @@ Global
 		{06BEBB30-AC91-4470-8930-22F7722A25E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06BEBB30-AC91-4470-8930-22F7722A25E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06BEBB30-AC91-4470-8930-22F7722A25E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B0D1DBF-59E4-4097-B6E5-A9481B65614D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B0D1DBF-59E4-4097-B6E5-A9481B65614D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B0D1DBF-59E4-4097-B6E5-A9481B65614D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B0D1DBF-59E4-4097-B6E5-A9481B65614D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80371605-E986-4937-B822-E8C39C0AF9CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80371605-E986-4937-B822-E8C39C0AF9CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80371605-E986-4937-B822-E8C39C0AF9CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80371605-E986-4937-B822-E8C39C0AF9CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7B0D1DBF-59E4-4097-B6E5-A9481B65614D} = {15E1B864-3745-4FF5-BAB2-EC037FFE6938}
+		{80371605-E986-4937-B822-E8C39C0AF9CD} = {15E1B864-3745-4FF5-BAB2-EC037FFE6938}
 	EndGlobalSection
 EndGlobal
