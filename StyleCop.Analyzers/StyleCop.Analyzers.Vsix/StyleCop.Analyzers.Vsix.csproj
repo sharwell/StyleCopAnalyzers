@@ -52,6 +52,19 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Templates\StyleCop.Analyzers.Templates.DiagnosticAnalyzerTemplate\StyleCop.Analyzers.Templates.DiagnosticAnalyzerTemplate.csproj">
+      <Project>{80371605-E986-4937-B822-E8C39C0AF9CD}</Project>
+      <Name>StyleCop.Analyzers.Templates.DiagnosticAnalyzerTemplate</Name>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Templates\StyleCop.Analyzers.Templates.Wizard\StyleCop.Analyzers.Templates.Wizard.csproj">
+      <Project>{7B0D1DBF-59E4-4097-B6E5-A9481B65614D}</Project>
+      <Name>StyleCop.Analyzers.Templates.Wizard</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
     <ProjectReference Include="..\StyleCop.Analyzers\StyleCop.Analyzers.csproj">
       <Project>{3B052737-06CE-4182-AE0F-08EB82DFA73E}</Project>
       <Name>StyleCop.Analyzers</Name>

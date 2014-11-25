@@ -38,5 +38,15 @@ namespace StyleCop.Analyzers.Templates.Wizard
 
             Close();
         }
+
+        private void ChooseSaId_Activated(object sender, EventArgs e)
+        {
+            nudSaId.Focus();
+        }
+
+        private void nudSaId_Enter(object sender, EventArgs e)
+        {
+            nudSaId.Select(0, nudSaId.Text.Length);
+        }
     }
 }

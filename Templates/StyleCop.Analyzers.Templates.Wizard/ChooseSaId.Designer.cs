@@ -71,6 +71,7 @@
             0,
             0,
             0});
+            this.nudSaId.Enter += new System.EventHandler(this.nudSaId_Enter);
             // 
             // label1
             // 
@@ -114,8 +115,10 @@
             // 
             // ChooseSaId
             // 
+            this.AcceptButton = this.button1;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(182, 249);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.btnCancel);
@@ -130,6 +133,7 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.Text = "Choose SA ID...";
+            this.Activated += new System.EventHandler(this.ChooseSaId_Activated);
             ((System.ComponentModel.ISupportInitialize)(this.nudSaId)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

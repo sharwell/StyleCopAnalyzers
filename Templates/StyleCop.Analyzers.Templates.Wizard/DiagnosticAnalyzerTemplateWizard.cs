@@ -14,28 +14,22 @@ namespace StyleCop.Analyzers.Templates.Wizard
     {
         public void BeforeOpeningFile(ProjectItem projectItem)
         {
-            throw new NotImplementedException();
         }
 
         public void ProjectFinishedGenerating(Project project)
         {
-            throw new NotImplementedException();
         }
 
         public void ProjectItemFinishedGenerating(ProjectItem projectItem)
         {
-            throw new NotImplementedException();
         }
 
         public void RunFinished()
         {
-            throw new NotImplementedException();
         }
 
         public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
         {
-            string destinationDirectory = replacementsDictionary["$destinationdirectory$"];
-
             try
             {
                 IDescriptionService descriptionService = new StyleCopSiteDescriptionService();
@@ -51,20 +45,17 @@ namespace StyleCop.Analyzers.Templates.Wizard
                 replacementsDictionary.Add("$SA$", form.PageInfo.CheckId);
                 replacementsDictionary.Add("$classSummary$", FormatClassRemarks(form.PageInfo.Cause));
                 replacementsDictionary.Add("$classRemarks$", FormatClassRemarks(form.PageInfo.RuleDescription));
-                replacementsDictionary.Add("$title$", form.PageInfo.Cause);
+                replacementsDictionary.Add("$title$", form.PageInfo.Cause.TrimEnd(Environment.NewLine.ToCharArray()));
                 replacementsDictionary.Add("$helpLink$", form.PageInfo.Link);
-
-
+                replacementsDictionary.Add("$category$", form.PageInfo.Category);
             }
             catch (WizardCancelledException)
             {
-                RemoveFolder(destinationDirectory);
                 throw;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
-                RemoveFolder(destinationDirectory);
 
                 throw;
             }
@@ -88,7 +79,14 @@ namespace StyleCop.Analyzers.Templates.Wizard
 
             for (int i = 0; i < lines.Length; i++)
             {
-                formatedLines.AddRange(SplitAt(lines[i], 140));
+                if (lines[i].Length > 130)
+                {
+                    formatedLines.AddRange(SplitAt(lines[i], 130));
+                }
+                else
+                {
+                    formatedLines.Add(lines[i]);
+                }
             }
 
             StringBuilder text = new StringBuilder();
@@ -98,7 +96,7 @@ namespace StyleCop.Analyzers.Templates.Wizard
                 text.AppendLine(string.Format(@"    /// {0}", formatedLines[i]));
             }
 
-            return text.ToString();
+            return text.ToString().TrimEnd(Environment.NewLine.ToCharArray());
         }
         private string[] SplitAt(string text, int lenght)
         {
@@ -127,18 +125,9 @@ namespace StyleCop.Analyzers.Templates.Wizard
             return splitted.ToArray();
         }
 
-        private void RemoveFolder(string folderToRemove)
-        {
-            // Clean up the template that was written to disk
-            if (Directory.Exists(folderToRemove))
-            {
-                Directory.Delete(folderToRemove, true);
-            }
-        }
-
         public bool ShouldAddProjectItem(string filePath)
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }
