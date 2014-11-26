@@ -16,7 +16,7 @@ $example$
     /// </code>
     /// </example>$endif$
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class $safeitemname$ : DiagnosticAnalyzer
+    public class $className$ : DiagnosticAnalyzer
     {
         public const string DiagnosticId = "$SA$";
         internal const string Title = "$title$";

@@ -12,6 +12,8 @@ namespace StyleCop.Analyzers.Templates.Wizard
 {
     public class DiagnosticAnalyzerTemplateWizard : IWizard
     {
+        protected string addedTemplateName;
+
         public void BeforeOpeningFile(ProjectItem projectItem)
         {
         }
@@ -22,6 +24,7 @@ namespace StyleCop.Analyzers.Templates.Wizard
 
         public void ProjectItemFinishedGenerating(ProjectItem projectItem)
         {
+            projectItem.Name = string.Format("{0}.cs", addedTemplateName);
         }
 
         public void RunFinished()
@@ -42,6 +45,8 @@ namespace StyleCop.Analyzers.Templates.Wizard
                     throw new WizardCancelledException();
                 }
 
+                addedTemplateName = form.PageInfo.CheckId + form.PageInfo.TypeName;
+
                 replacementsDictionary.Add("$SA$", form.PageInfo.CheckId);
                 replacementsDictionary.Add("$classSummary$", FormatClassRemarks(form.PageInfo.Cause));
                 replacementsDictionary.Add("$classRemarks$", FormatClassRemarks(form.PageInfo.RuleDescription));
@@ -50,6 +55,7 @@ namespace StyleCop.Analyzers.Templates.Wizard
                 replacementsDictionary.Add("$category$", form.PageInfo.Category);
                 replacementsDictionary.Add("$HasExamples$", form.PageInfo.HasExample.ToString());
                 replacementsDictionary.Add("$example$", FormatClassRemarks(form.PageInfo.Examples, false));
+                replacementsDictionary.Add("$className$", addedTemplateName);
             }
             catch (WizardCancelledException)
             {
