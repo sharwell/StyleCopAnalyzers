@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("StyleCop.Analyzers.Templates.Wizard")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Baker Hughes")]
+[assembly: AssemblyCompany("Mario Majcica")]
 [assembly: AssemblyProduct("StyleCop.Analyzers.Templates.Wizard")]
-[assembly: AssemblyCopyright("Copyright © Baker Hughes 2014")]
+[assembly: AssemblyCopyright("Copyright © Mario Majcica 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

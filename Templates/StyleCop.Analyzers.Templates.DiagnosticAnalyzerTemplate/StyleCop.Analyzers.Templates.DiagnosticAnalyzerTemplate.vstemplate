@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <DefaultName>DiagnosticAnalyzerTemplate.cs</DefaultName>
+    <Name>StyleCop Diagnostic Analyzer Template</Name>
+    <Description>Helps creating the StyleCop analyzer by retrieveng the necessary documentation from web.</Description>
+    <ProjectType>CSharp</ProjectType>
+    <SortOrder>10</SortOrder>
+    <Icon>TemplateIcon.ico</Icon>
+    <PreviewImage>PreviewImage.png</PreviewImage>
+    <TemplateID>8980958d-31a4-4c6e-ab8b-199a0a3eaf2c</TemplateID>
+    <RequiredFrameworkVersion>4.5</RequiredFrameworkVersion>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+  </TemplateData>
+  <TemplateContent>
+    <References>
+      <Reference>
+        <Assembly>System.Collections.Immutable</Assembly>
+      </Reference>
+    </References>
+    <ProjectItem TargetFileName="$fileinputname$.cs" ReplaceParameters="true">DiagnosticAnalyzer.cs</ProjectItem>
+  </TemplateContent>
+  <WizardExtension>
+    <Assembly>StyleCop.Analyzers.Templates.Wizard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=326c767ee6b05321</Assembly>
+    <FullClassName>StyleCop.Analyzers.Templates.Wizard.DiagnosticAnalyzerTemplateWizard</FullClassName>
+  </WizardExtension>
+</VSTemplate>
