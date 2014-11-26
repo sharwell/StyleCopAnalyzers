@@ -48,6 +48,8 @@ namespace StyleCop.Analyzers.Templates.Wizard
                 replacementsDictionary.Add("$title$", form.PageInfo.Cause.TrimEnd(Environment.NewLine.ToCharArray()));
                 replacementsDictionary.Add("$helpLink$", form.PageInfo.Link);
                 replacementsDictionary.Add("$category$", form.PageInfo.Category);
+                replacementsDictionary.Add("$HasExamples$", form.PageInfo.HasExample.ToString());
+                replacementsDictionary.Add("$example$", FormatClassRemarks(form.PageInfo.Examples, false));
             }
             catch (WizardCancelledException)
             {
@@ -61,13 +63,16 @@ namespace StyleCop.Analyzers.Templates.Wizard
             }
         }
 
-        private string FormatClassRemarks(string remarks)
+        private string FormatClassRemarks(string remarks, bool treatLineAsPara = true)
         {
             string[] lines = remarks.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
             for (int i = 0; i < lines.Length; i++)
             {
-                lines[i] = string.Format(@"<para>{0}</para>", lines[i]);
+                if (treatLineAsPara)
+                {
+                    lines[i] = string.Format(@"<para>{0}</para>", lines[i]);
+                }
 
                 lines[i] = lines[i].Replace(@"<EM>", @"<c>");
                 lines[i] = lines[i].Replace(@"<em>", @"<c>");

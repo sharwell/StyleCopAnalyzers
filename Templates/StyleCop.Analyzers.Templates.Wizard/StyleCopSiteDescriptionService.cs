@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using System.Net;
 
 namespace StyleCop.Analyzers.Templates.Wizard
 {
@@ -39,6 +40,7 @@ namespace StyleCop.Analyzers.Templates.Wizard
 
             StringBuilder causeText = new StringBuilder();
             StringBuilder ruleDescriptionText = new StringBuilder();
+            StringBuilder exampleText = new StringBuilder();
 
             foreach (var item in mainbody.ChildNodes)
             {
@@ -63,6 +65,13 @@ namespace StyleCop.Analyzers.Templates.Wizard
 
                 if (item.Name.ToUpper() == "P")
                 {
+                    if (item.Attributes.Contains("class") && item.Attributes["class"].Value == "MsoNormal")
+                    {
+                        exampleText.AppendLine(WebUtility.HtmlDecode(item.InnerText));
+
+                        continue;
+                    }
+
                     if (cause)
                     {
                         causeText.AppendLine(item.InnerHtml);
@@ -77,6 +86,7 @@ namespace StyleCop.Analyzers.Templates.Wizard
 
             pageInfo.Cause = causeText.ToString();
             pageInfo.RuleDescription = ruleDescriptionText.ToString();
+            pageInfo.Examples = exampleText.ToString();
 
             return pageInfo;
         }

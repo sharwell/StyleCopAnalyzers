@@ -14,5 +14,13 @@ namespace StyleCop.Analyzers.Templates.Wizard
         public string Cause { get; set; }
         public string RuleDescription { get; set; }
         public string Link { get; set; }
+        public string Examples { get; set; }
+        public bool HasExample
+        {
+            get
+            {
+                return string.IsNullOrEmpty(Examples);
+            }
+        }
     }
 }
