@@ -18,7 +18,7 @@
         <Assembly>System.Collections.Immutable</Assembly>
       </Reference>
     </References>
-    <ProjectItem TargetFileName="$fileinputname$.cs" ReplaceParameters="true">DiagnosticAnalyzer.cs</ProjectItem>
+    <ProjectItem TargetFileName="$className$.cs" ReplaceParameters="true">DiagnosticAnalyzer.cs</ProjectItem>
   </TemplateContent>
   <WizardExtension>
     <Assembly>StyleCop.Analyzers.Templates.Wizard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=326c767ee6b05321</Assembly>

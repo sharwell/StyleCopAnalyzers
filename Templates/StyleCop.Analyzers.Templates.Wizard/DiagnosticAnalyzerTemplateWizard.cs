@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Text;
     using System.Windows.Forms;
     using EnvDTE;
@@ -13,21 +12,6 @@
     /// </summary>
     public class DiagnosticAnalyzerTemplateWizard : IWizard
     {
-        protected string addedTemplateName;
-
-        /// <inheritdoc/>
-        public void ProjectItemFinishedGenerating(ProjectItem projectItem)
-        {
-            try
-            {
-                projectItem.Name = string.Format("{0}.cs", addedTemplateName);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Can't rename the item template: {0}", ex.Message);
-            }
-        }
-
         /// <inheritdoc/>
         public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
         {
@@ -43,15 +27,13 @@
                     throw new WizardCancelledException();
                 }
 
-                addedTemplateName = form.PageInfo.CheckId + form.PageInfo.TypeName;
-
                 replacementsDictionary.Add("$SA$", form.PageInfo.CheckId);
                 replacementsDictionary.Add("$classSummary$", FormatClassRemarks(form.PageInfo.Cause));
                 replacementsDictionary.Add("$classRemarks$", FormatClassRemarks(form.PageInfo.RuleDescription));
-                replacementsDictionary.Add("$title$", String.Join<Line>(Environment.NewLine, form.PageInfo.Cause).TrimEnd(Environment.NewLine.ToCharArray()));
+                replacementsDictionary.Add("$title$", string.Join(Environment.NewLine, form.PageInfo.Cause).TrimEnd(Environment.NewLine.ToCharArray()));
                 replacementsDictionary.Add("$helpLink$", form.PageInfo.Link);
                 replacementsDictionary.Add("$category$", form.PageInfo.Category);
-                replacementsDictionary.Add("$className$", addedTemplateName);
+                replacementsDictionary.Add("$className$", form.PageInfo.CheckId + form.PageInfo.TypeName);
             }
             catch (RuleNotFoundException notFound)
             {
@@ -89,6 +71,11 @@
 
         /// <inheritdoc/>
         public void ProjectFinishedGenerating(Project project)
+        {
+        }
+
+        /// <inheritdoc/>
+        public void ProjectItemFinishedGenerating(ProjectItem projectItem)
         {
         }
 
