@@ -10,11 +10,6 @@ $classSummary$
     /// <remarks>
 $classRemarks$
     /// </remarks>
-    /// <example>
-    /// <code>$if$ ($HasExamples$ == True)
-$example$
-    /// </code>
-    /// </example>$endif$
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class $className$ : DiagnosticAnalyzer
     {

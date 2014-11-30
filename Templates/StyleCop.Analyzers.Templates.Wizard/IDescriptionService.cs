@@ -5,5 +5,6 @@
     public interface IDescriptionService
     {
         Task<PageInfo> GetPageInfo(decimal saId);
+        Task<bool> RuleExists(decimal saId);
     }
 }

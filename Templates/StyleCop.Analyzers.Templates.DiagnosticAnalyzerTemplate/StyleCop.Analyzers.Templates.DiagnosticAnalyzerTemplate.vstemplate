@@ -3,7 +3,7 @@
   <TemplateData>
     <DefaultName>DiagnosticAnalyzerTemplate.cs</DefaultName>
     <Name>StyleCop Diagnostic Analyzer Template</Name>
-    <Description>Helps creating the StyleCop analyzer by retrieveng the necessary documentation from web.</Description>
+    <Description>Helps creating the StyleCop analyzer by retrieving the necessary documentation from web.</Description>
     <ProjectType>CSharp</ProjectType>
     <SortOrder>10</SortOrder>
     <Icon>TemplateIcon.ico</Icon>

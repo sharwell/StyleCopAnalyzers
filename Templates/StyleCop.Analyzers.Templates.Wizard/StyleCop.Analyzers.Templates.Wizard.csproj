@@ -63,8 +63,10 @@
     </Compile>
     <Compile Include="DiagnosticAnalyzerTemplateWizard.cs" />
     <Compile Include="IDescriptionService.cs" />
+    <Compile Include="Line.cs" />
     <Compile Include="PageInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RuleNotFoundException.cs" />
     <Compile Include="StyleCopSiteDescriptionService.cs" />
   </ItemGroup>
   <ItemGroup>

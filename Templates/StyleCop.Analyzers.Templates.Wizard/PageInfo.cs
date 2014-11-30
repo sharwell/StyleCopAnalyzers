@@ -1,26 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace StyleCop.Analyzers.Templates.Wizard
+﻿namespace StyleCop.Analyzers.Templates.Wizard
 {
+    using System.Collections.Generic;
+
     public class PageInfo
     {
+        public PageInfo()
+        {
+            this.Cause = new List<Line>();
+            this.RuleDescription = new List<Line>();
+        }
+
         public string TypeName { get; set; }
         public string CheckId { get; set; }
         public string Category { get; set; }
-        public string Cause { get; set; }
-        public string RuleDescription { get; set; }
+        public List<Line> Cause { get; set; }
+        public List<Line> RuleDescription { get; set; }
         public string Link { get; set; }
-        public string Examples { get; set; }
-        public bool HasExample
-        {
-            get
-            {
-                return string.IsNullOrEmpty(Examples);
-            }
-        }
     }
 }

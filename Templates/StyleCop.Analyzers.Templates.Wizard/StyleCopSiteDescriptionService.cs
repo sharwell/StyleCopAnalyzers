@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using HtmlAgilityPack;
-using System.Net;
-
-namespace StyleCop.Analyzers.Templates.Wizard
+﻿namespace StyleCop.Analyzers.Templates.Wizard
 {
+    using System.Net;
+    using System.Net.Http;
+    using System.Threading.Tasks;
+    using HtmlAgilityPack;
+
     public class StyleCopSiteDescriptionService : IDescriptionService
     {
         private const string baseUrl = @"http://www.stylecop.com/docs/SA{0:0.#}.html";
@@ -26,7 +21,14 @@ namespace StyleCop.Analyzers.Templates.Wizard
             using (HttpResponseMessage response = await client.GetAsync(page))
             using (HttpContent content = response.Content)
             {
-                document.Load(await content.ReadAsStreamAsync());
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    document.Load(await content.ReadAsStreamAsync());
+                }
+                else
+                {
+                    throw new RuleNotFoundException();
+                }
             }
 
             HtmlNode mainbody = document.GetElementbyId("mainbody");
@@ -37,10 +39,7 @@ namespace StyleCop.Analyzers.Templates.Wizard
 
             bool cause = false;
             bool ruleDescription = false;
-
-            StringBuilder causeText = new StringBuilder();
-            StringBuilder ruleDescriptionText = new StringBuilder();
-            StringBuilder exampleText = new StringBuilder();
+            bool inExample = false;
 
             foreach (var item in mainbody.ChildNodes)
             {
@@ -67,28 +66,50 @@ namespace StyleCop.Analyzers.Templates.Wizard
                 {
                     if (item.Attributes.Contains("class") && item.Attributes["class"].Value == "MsoNormal")
                     {
-                        exampleText.AppendLine(WebUtility.HtmlDecode(item.InnerText));
+                        if (!inExample)
+                        {
+                            pageInfo.RuleDescription.Add(new Line("<code>"));
+                            inExample = true;
+                        }
+
+                        pageInfo.RuleDescription.Add(new Line(WebUtility.HtmlDecode(item.InnerText)));
 
                         continue;
                     }
 
+                    if (inExample)
+                    {
+                        pageInfo.RuleDescription.Add(new Line("</code>"));
+                        inExample = false;
+                    }
+
                     if (cause)
                     {
-                        causeText.AppendLine(item.InnerHtml);
+                        pageInfo.Cause.Add(new Line(item.InnerHtml));
                     }
 
                     if (ruleDescription)
                     {
-                        ruleDescriptionText.AppendLine(item.InnerHtml);
+                        pageInfo.RuleDescription.Add(new Line(item.InnerHtml, true));
                     }
                 }
             }
 
-            pageInfo.Cause = causeText.ToString();
-            pageInfo.RuleDescription = ruleDescriptionText.ToString();
-            pageInfo.Examples = exampleText.ToString();
-
             return pageInfo;
+        }
+
+        public async Task<bool> RuleExists(decimal saId)
+        {
+            using (HttpClient client = new HttpClient())
+            using (HttpResponseMessage response = await client.GetAsync(string.Format(baseUrl, saId)))
+            {
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    return true;
+                }
+
+                return false;
+            }
         }
     }
 }

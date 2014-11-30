@@ -1,36 +1,34 @@
-﻿using EnvDTE;
-using Microsoft.VisualStudio.TemplateWizard;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace StyleCop.Analyzers.Templates.Wizard
+﻿namespace StyleCop.Analyzers.Templates.Wizard
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Text;
+    using System.Windows.Forms;
+    using EnvDTE;
+    using Microsoft.VisualStudio.TemplateWizard;
+
+    /// <summary>
+    /// Retrieves and formats the data for the DiagnosticAnalyzer Template.
+    /// </summary>
     public class DiagnosticAnalyzerTemplateWizard : IWizard
     {
         protected string addedTemplateName;
 
-        public void BeforeOpeningFile(ProjectItem projectItem)
-        {
-        }
-
-        public void ProjectFinishedGenerating(Project project)
-        {
-        }
-
+        /// <inheritdoc/>
         public void ProjectItemFinishedGenerating(ProjectItem projectItem)
         {
-            projectItem.Name = string.Format("{0}.cs", addedTemplateName);
+            try
+            {
+                projectItem.Name = string.Format("{0}.cs", addedTemplateName);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Can't rename the item template: {0}", ex.Message);
+            }
         }
 
-        public void RunFinished()
-        {
-        }
-
+        /// <inheritdoc/>
         public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
         {
             try
@@ -50,12 +48,16 @@ namespace StyleCop.Analyzers.Templates.Wizard
                 replacementsDictionary.Add("$SA$", form.PageInfo.CheckId);
                 replacementsDictionary.Add("$classSummary$", FormatClassRemarks(form.PageInfo.Cause));
                 replacementsDictionary.Add("$classRemarks$", FormatClassRemarks(form.PageInfo.RuleDescription));
-                replacementsDictionary.Add("$title$", form.PageInfo.Cause.TrimEnd(Environment.NewLine.ToCharArray()));
+                replacementsDictionary.Add("$title$", String.Join<Line>(Environment.NewLine, form.PageInfo.Cause).TrimEnd(Environment.NewLine.ToCharArray()));
                 replacementsDictionary.Add("$helpLink$", form.PageInfo.Link);
                 replacementsDictionary.Add("$category$", form.PageInfo.Category);
-                replacementsDictionary.Add("$HasExamples$", form.PageInfo.HasExample.ToString());
-                replacementsDictionary.Add("$example$", FormatClassRemarks(form.PageInfo.Examples, false));
                 replacementsDictionary.Add("$className$", addedTemplateName);
+            }
+            catch (RuleNotFoundException notFound)
+            {
+                MessageBox.Show(notFound.Message);
+
+                throw new WizardCancelledException(notFound.Message, notFound);
             }
             catch (WizardCancelledException)
             {
@@ -63,59 +65,98 @@ namespace StyleCop.Analyzers.Templates.Wizard
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                MessageBox.Show(ex.Message);
 
-                throw;
+                throw new WizardCancelledException(ex.Message, ex);
             }
         }
 
-        private string FormatClassRemarks(string remarks, bool treatLineAsPara = true)
+        /// <inheritdoc/>
+        public bool ShouldAddProjectItem(string filePath)
         {
-            string[] lines = remarks.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            return true;
+        }
 
-            for (int i = 0; i < lines.Length; i++)
+        /// <inheritdoc/>
+        public void RunFinished()
+        {
+        }
+
+        /// <inheritdoc/>
+        public void BeforeOpeningFile(ProjectItem projectItem)
+        {
+        }
+
+        /// <inheritdoc/>
+        public void ProjectFinishedGenerating(Project project)
+        {
+        }
+
+        /// <summary>
+        /// Formats the text with a particular style.
+        /// </summary>
+        /// <param name="remarks">Text to be formated.</param>
+        /// <returns>Returns a formated string that will represent a part of the class remark.</returns>
+        private string FormatClassRemarks(List<Line> remarks)
+        {
+            const int maxLineLength = 130;
+            List<string> formatedLines = new List<string>();
+            StringBuilder text = new StringBuilder();
+
+            // Substitute all of the web formating with a correct XmlDocumentatin elements
+            foreach (Line line in remarks)
             {
-                if (treatLineAsPara)
+                // In case we should treat this line as a paragraph, decorate with the right elements
+                if (line.IsParagraph)
                 {
-                    lines[i] = string.Format(@"<para>{0}</para>", lines[i]);
+                    line.Format(@"<para>{0}</para>");
                 }
 
-                lines[i] = lines[i].Replace(@"<EM>", @"<c>");
-                lines[i] = lines[i].Replace(@"<em>", @"<c>");
-                lines[i] = lines[i].Replace(@"</EM>", @"</c>");
-                lines[i] = lines[i].Replace(@"</em>", @"</c>");
-            }
+                line.Replace(@"<EM>", @"<c>");
+                line.Replace(@"</EM>", @"</c>");
 
-            List<string> formatedLines = new List<string>();
-
-            for (int i = 0; i < lines.Length; i++)
-            {
-                if (lines[i].Length > 130)
+                // in case the lines are longer than 130 char, split them opportunely
+                if (line.Length > maxLineLength)
                 {
-                    formatedLines.AddRange(SplitAt(lines[i], 130));
+                    formatedLines.AddRange(SplitAt(line.Text, maxLineLength));
                 }
                 else
                 {
-                    formatedLines.Add(lines[i]);
+                    formatedLines.Add(line.Text);
                 }
             }
 
-            StringBuilder text = new StringBuilder();
-
-            for (int i = 0; i < formatedLines.Count; i++)
+            // Decorate every line with the leading spaces (4) and the slash signs
+            foreach (string line in formatedLines)
             {
-                text.AppendLine(string.Format(@"    /// {0}", formatedLines[i]));
+                text.AppendLine(string.Format(@"    /// {0}", line));
             }
 
             return text.ToString().TrimEnd(Environment.NewLine.ToCharArray());
         }
-        private string[] SplitAt(string text, int lenght)
+
+        /// <summary>
+        /// Splits a string in an array of strings of a given length.
+        /// </summary>
+        /// <param name="text">String that should be split.</param>
+        /// <param name="lenght">Maximum length of each substring.</param>
+        /// <returns>An array of strings where each line represents a substring of a given text of specified length.</returns>
+        /// <remarks>
+        /// In case the character at the split position is not a space character, the last occurrence
+        /// of the space character will be searched and the string will be split only at that point.
+        /// </remarks>
+        protected string[] SplitAt(string text, int lenght)
         {
             List<string> splitted = new List<string>();
 
             if (text.Length > lenght)
             {
                 int trunkateAt = text.Substring(0, lenght).LastIndexOf(" ");
+
+                if (trunkateAt == 0)
+                {
+                    trunkateAt = lenght;
+                }
 
                 splitted.Add(text.Substring(0, trunkateAt));
 
@@ -134,11 +175,6 @@ namespace StyleCop.Analyzers.Templates.Wizard
             }
 
             return splitted.ToArray();
-        }
-
-        public bool ShouldAddProjectItem(string filePath)
-        {
-            return true;
         }
     }
 }
