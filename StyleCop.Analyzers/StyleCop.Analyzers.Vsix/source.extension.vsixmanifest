@@ -17,5 +17,7 @@
   <Assets>
     <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="StyleCop.Analyzers" Path="|StyleCop.Analyzers|"/>
     <Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="Project" d:ProjectName="StyleCop.Analyzers" Path="|StyleCop.Analyzers|"/>
+    <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="StyleCop.Analyzers.Templates.DiagnosticAnalyzerTemplate" d:TargetPath="|StyleCop.Analyzers.Templates.DiagnosticAnalyzerTemplate;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
+    <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="StyleCop.Analyzers.Templates.Wizard" Path="|StyleCop.Analyzers.Templates.Wizard|" AssemblyName="|StyleCop.Analyzers.Templates.Wizard;AssemblyName|" />
   </Assets>
 </PackageManifest>
