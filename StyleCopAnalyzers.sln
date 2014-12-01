@@ -13,6 +13,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StyleCop.Analyzers.Test", "StyleCop.Analyzers\StyleCop.Analyzers.Test\StyleCop.Analyzers.Test.csproj", "{3EB54B68-A7AA-45E8-A97B-A0746712140B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StyleCop.Analyzers.Vsix", "StyleCop.Analyzers\StyleCop.Analyzers.Vsix\StyleCop.Analyzers.Vsix.csproj", "{06BEBB30-AC91-4470-8930-22F7722A25E4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{80371605-E986-4937-B822-E8C39C0AF9CD} = {80371605-E986-4937-B822-E8C39C0AF9CD}
+		{7B0D1DBF-59E4-4097-B6E5-A9481B65614D} = {7B0D1DBF-59E4-4097-B6E5-A9481B65614D}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5F9532E9-B126-402A-B338-54431A4882B2}"
 	ProjectSection(SolutionItems) = preProject
@@ -26,6 +30,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StyleCop.Analyzers.Templates.Wizard", "Templates\StyleCop.Analyzers.Templates.Wizard\StyleCop.Analyzers.Templates.Wizard.csproj", "{7B0D1DBF-59E4-4097-B6E5-A9481B65614D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StyleCop.Analyzers.Templates.DiagnosticAnalyzerTemplate", "Templates\StyleCop.Analyzers.Templates.DiagnosticAnalyzerTemplate\StyleCop.Analyzers.Templates.DiagnosticAnalyzerTemplate.csproj", "{80371605-E986-4937-B822-E8C39C0AF9CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StyleCop.Analyzers.Generator", "StyleCop.Analyzers.Generator\StyleCop.Analyzers.Generator.csproj", "{19A8547D-A4B6-466C-896E-DF8525A4BD6C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +59,10 @@ Global
 		{80371605-E986-4937-B822-E8C39C0AF9CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80371605-E986-4937-B822-E8C39C0AF9CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80371605-E986-4937-B822-E8C39C0AF9CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19A8547D-A4B6-466C-896E-DF8525A4BD6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19A8547D-A4B6-466C-896E-DF8525A4BD6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19A8547D-A4B6-466C-896E-DF8525A4BD6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19A8547D-A4B6-466C-896E-DF8525A4BD6C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

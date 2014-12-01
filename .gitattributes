@@ -9,6 +9,7 @@
 *.txt text
 *.ps1 text
 LICENSE text
+*.cs.template text
 
 # Projects and solutions
 *.sln text

@@ -13,11 +13,6 @@
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
   </TemplateData>
   <TemplateContent>
-    <References>
-      <Reference>
-        <Assembly>System.Collections.Immutable</Assembly>
-      </Reference>
-    </References>
     <ProjectItem TargetFileName="$className$.cs" ReplaceParameters="true">DiagnosticAnalyzer.cs</ProjectItem>
   </TemplateContent>
   <WizardExtension>
