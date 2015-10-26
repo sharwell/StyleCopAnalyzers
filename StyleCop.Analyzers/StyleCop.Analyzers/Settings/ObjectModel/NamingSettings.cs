@@ -3,28 +3,35 @@
 
 namespace StyleCop.Analyzers.Settings.ObjectModel
 {
-    using System.Collections.Immutable;
-    using Newtonsoft.Json;
+    extern alias Json6;
 
-    [JsonObject(MemberSerialization.OptIn)]
+    using System.Collections.Immutable;
+    using J6 = Json6::Newtonsoft.Json;
+    using J7 = global::Newtonsoft.Json;
+
+    [J6.JsonObject(J6.MemberSerialization.OptIn)]
+    [J7.JsonObject(J7.MemberSerialization.OptIn)]
     internal class NamingSettings
     {
         /// <summary>
         /// This is the backing field for the <see cref="AllowCommonHungarianPrefixes"/> property.
         /// </summary>
-        [JsonProperty("allowCommonHungarianPrefixes", DefaultValueHandling = DefaultValueHandling.Include)]
+        [J6.JsonProperty("allowCommonHungarianPrefixes", DefaultValueHandling = J6.DefaultValueHandling.Include)]
+        [J7.JsonProperty("allowCommonHungarianPrefixes", DefaultValueHandling = J7.DefaultValueHandling.Include)]
         private bool allowCommonHungarianPrefixes;
 
         /// <summary>
         /// This is the backing field for the <see cref="AllowedHungarianPrefixes"/> property.
         /// </summary>
-        [JsonProperty("allowedHungarianPrefixes", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [J6.JsonProperty("allowedHungarianPrefixes", DefaultValueHandling = J6.DefaultValueHandling.Ignore)]
+        [J7.JsonProperty("allowedHungarianPrefixes", DefaultValueHandling = J7.DefaultValueHandling.Ignore)]
         private ImmutableArray<string>.Builder allowedHungarianPrefixes;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NamingSettings"/> class during JSON deserialization.
         /// </summary>
-        [JsonConstructor]
+        [J6.JsonConstructor]
+        [J7.JsonConstructor]
         protected internal NamingSettings()
         {
             this.allowCommonHungarianPrefixes = true;

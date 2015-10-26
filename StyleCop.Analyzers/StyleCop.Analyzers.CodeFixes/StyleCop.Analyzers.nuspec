@@ -22,6 +22,7 @@
     <file src="bin\$Configuration$\StyleCop.Analyzers.pdb" target="analyzers\dotnet\cs" />
     <file src="bin\$Configuration$\StyleCop.Analyzers.CodeFixes.dll" target="analyzers\dotnet\cs" />
     <file src="bin\$Configuration$\StyleCop.Analyzers.CodeFixes.pdb" target="analyzers\dotnet\cs" />
+    <file src="..\..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll" target="analyzers\dotnet" />
     <file src="..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll" target="analyzers\dotnet\cs" />
 
     <!-- Scripts -->

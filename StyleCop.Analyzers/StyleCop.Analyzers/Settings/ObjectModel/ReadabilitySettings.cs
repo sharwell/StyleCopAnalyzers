@@ -3,15 +3,20 @@
 
 namespace StyleCop.Analyzers.Settings.ObjectModel
 {
-    using Newtonsoft.Json;
+    extern alias Json6;
 
-    [JsonObject(MemberSerialization.OptIn)]
+    using J6 = Json6::Newtonsoft.Json;
+    using J7 = global::Newtonsoft.Json;
+
+    [J6.JsonObject(J6.MemberSerialization.OptIn)]
+    [J7.JsonObject(J7.MemberSerialization.OptIn)]
     internal class ReadabilitySettings
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadabilitySettings"/> class during JSON deserialization.
         /// </summary>
-        [JsonConstructor]
+        [J6.JsonConstructor]
+        [J7.JsonConstructor]
         protected internal ReadabilitySettings()
         {
         }

@@ -3,11 +3,15 @@
 
 namespace StyleCop.Analyzers.Settings.ObjectModel
 {
+    extern alias Json6;
+
     using System.Collections.Immutable;
     using System.Text.RegularExpressions;
-    using Newtonsoft.Json;
+    using J6 = Json6::Newtonsoft.Json;
+    using J7 = global::Newtonsoft.Json;
 
-    [JsonObject(MemberSerialization.OptIn)]
+    [J6.JsonObject(J6.MemberSerialization.OptIn)]
+    [J7.JsonObject(J7.MemberSerialization.OptIn)]
     internal class DocumentationSettings
     {
         /// <summary>
@@ -23,13 +27,15 @@ namespace StyleCop.Analyzers.Settings.ObjectModel
         /// <summary>
         /// This is the backing field for the <see cref="CompanyName"/> property.
         /// </summary>
-        [JsonProperty("companyName", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [J6.JsonProperty("companyName", DefaultValueHandling = J6.DefaultValueHandling.Ignore)]
+        [J7.JsonProperty("companyName", DefaultValueHandling = J7.DefaultValueHandling.Ignore)]
         private string companyName;
 
         /// <summary>
         /// This is the backing field for the <see cref="CopyrightText"/> property.
         /// </summary>
-        [JsonProperty("copyrightText", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [J6.JsonProperty("copyrightText", DefaultValueHandling = J6.DefaultValueHandling.Ignore)]
+        [J7.JsonProperty("copyrightText", DefaultValueHandling = J7.DefaultValueHandling.Ignore)]
         private string copyrightText;
 
         /// <summary>
@@ -40,55 +46,64 @@ namespace StyleCop.Analyzers.Settings.ObjectModel
         /// <summary>
         /// This is the backing field for the <see cref="Variables"/> property.
         /// </summary>
-        [JsonProperty("variables", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [J6.JsonProperty("variables", DefaultValueHandling = J6.DefaultValueHandling.Ignore)]
+        [J7.JsonProperty("variables", DefaultValueHandling = J7.DefaultValueHandling.Ignore)]
         private ImmutableDictionary<string, string>.Builder variables;
 
         /// <summary>
         /// This is the backing field for the <see cref="XmlHeader"/> property.
         /// </summary>
-        [JsonProperty("xmlHeader", DefaultValueHandling = DefaultValueHandling.Include)]
+        [J6.JsonProperty("xmlHeader", DefaultValueHandling = J6.DefaultValueHandling.Include)]
+        [J7.JsonProperty("xmlHeader", DefaultValueHandling = J7.DefaultValueHandling.Include)]
         private bool xmlHeader;
 
         /// <summary>
         /// This is the backing field for the <see cref="DocumentExposedElements"/> property.
         /// </summary>
-        [JsonProperty("documentExposedElements", DefaultValueHandling = DefaultValueHandling.Include)]
+        [J6.JsonProperty("documentExposedElements", DefaultValueHandling = J6.DefaultValueHandling.Include)]
+        [J7.JsonProperty("documentExposedElements", DefaultValueHandling = J7.DefaultValueHandling.Include)]
         private bool documentExposedElements;
 
         /// <summary>
         /// This is the backing field for the <see cref="DocumentInternalElements"/> property.
         /// </summary>
-        [JsonProperty("documentInternalElements", DefaultValueHandling = DefaultValueHandling.Include)]
+        [J6.JsonProperty("documentInternalElements", DefaultValueHandling = J6.DefaultValueHandling.Include)]
+        [J7.JsonProperty("documentInternalElements", DefaultValueHandling = J7.DefaultValueHandling.Include)]
         private bool documentInternalElements;
 
         /// <summary>
         /// This is the backing field for the <see cref="DocumentPrivateElements"/> property.
         /// </summary>
-        [JsonProperty("documentPrivateElements", DefaultValueHandling = DefaultValueHandling.Include)]
+        [J6.JsonProperty("documentPrivateElements", DefaultValueHandling = J6.DefaultValueHandling.Include)]
+        [J7.JsonProperty("documentPrivateElements", DefaultValueHandling = J7.DefaultValueHandling.Include)]
         private bool documentPrivateElements;
 
         /// <summary>
         /// This is the backing field for the <see cref="DocumentInterfaces"/> property.
         /// </summary>
-        [JsonProperty("documentInterfaces", DefaultValueHandling = DefaultValueHandling.Include)]
+        [J6.JsonProperty("documentInterfaces", DefaultValueHandling = J6.DefaultValueHandling.Include)]
+        [J7.JsonProperty("documentInterfaces", DefaultValueHandling = J7.DefaultValueHandling.Include)]
         private bool documentInterfaces;
 
         /// <summary>
         /// This is the backing field for the <see cref="DocumentPrivateFields"/> property.
         /// </summary>
-        [JsonProperty("documentPrivateFields", DefaultValueHandling = DefaultValueHandling.Include)]
+        [J6.JsonProperty("documentPrivateFields", DefaultValueHandling = J6.DefaultValueHandling.Include)]
+        [J7.JsonProperty("documentPrivateFields", DefaultValueHandling = J7.DefaultValueHandling.Include)]
         private bool documentPrivateFields;
 
         /// <summary>
         /// This is the backing field for the <see cref="FileNamingConvention"/> property.
         /// </summary>
-        [JsonProperty("fileNamingConvention", DefaultValueHandling = DefaultValueHandling.Include)]
+        [J6.JsonProperty("fileNamingConvention", DefaultValueHandling = J6.DefaultValueHandling.Include)]
+        [J7.JsonProperty("fileNamingConvention", DefaultValueHandling = J7.DefaultValueHandling.Include)]
         private FileNamingConvention fileNamingConvention;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DocumentationSettings"/> class during JSON deserialization.
         /// </summary>
-        [JsonConstructor]
+        [J6.JsonConstructor]
+        [J7.JsonConstructor]
         protected internal DocumentationSettings()
         {
             this.companyName = DefaultCompanyName;
