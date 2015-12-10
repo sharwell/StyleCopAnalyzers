@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Tunnel Vision Laboratories, LLC. All Rights Reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using System.Collections.Generic;
+using System.Collections.Immutable;
+
 namespace StyleCopTester
 {
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-
     internal static class Extensions
     {
         internal static void AddToInnerList<TKey, TValue>(this IDictionary<TKey, ImmutableList<TValue>> dictionary, TKey key, TValue item)

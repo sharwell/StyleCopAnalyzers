@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Tunnel Vision Laboratories, LLC. All Rights Reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using System.Collections.Generic;
+using Microsoft.CodeAnalysis;
+
 namespace System.Linq
 {
-    using Collections.Generic;
-    using Microsoft.CodeAnalysis;
-
     /// <summary>
     /// This class supports a subset of LINQ operations on <see cref="SyntaxTriviaList"/> without requiring boxing of
     /// operands as an <see cref="IEnumerable{T}"/>.

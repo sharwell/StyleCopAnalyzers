@@ -1,21 +1,21 @@
 ﻿// Copyright (c) Tunnel Vision Laboratories, LLC. All Rights Reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using System;
+using System.Collections.Immutable;
+using System.Composition;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.CodeFixes;
+using StyleCop.Analyzers.DocumentationRules;
+using StyleCop.Analyzers.Helpers;
+using StyleCop.Analyzers.Settings.ObjectModel;
+
 namespace StyleCop.Analyzers.Settings
 {
-    using System;
-    using System.Collections.Immutable;
-    using System.Composition;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CodeActions;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using StyleCop.Analyzers.DocumentationRules;
-    using StyleCop.Analyzers.Helpers;
-    using StyleCop.Analyzers.Settings.ObjectModel;
-
     /// <summary>
     /// Implements a code fix that will generate a StyleCop settings file if it does not exist yet.
     /// </summary>

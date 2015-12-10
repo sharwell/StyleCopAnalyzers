@@ -1,24 +1,24 @@
 ﻿// Copyright (c) Tunnel Vision Laboratories, LLC. All Rights Reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Threading;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.MSBuild;
+
 namespace StyleCopTester
 {
-    using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Diagnostics;
-    using System.Linq;
-    using System.Reflection;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using System.Windows.Threading;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CodeActions;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
-    using Microsoft.CodeAnalysis.MSBuild;
-
     /// <summary>
     /// StyleCopTester is a tool that will analyze a solution, find diagnostics in it and will print out the number of
     /// diagnostics it could find. This is useful to easily test performance without having the overhead of visual
