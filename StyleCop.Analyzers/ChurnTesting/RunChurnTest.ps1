@@ -79,3 +79,19 @@ Pop-Location
 .\bin\StyleCopTester-Roslyn.1.0.0\StyleCopTester.exe bin\Newtonsoft.Json\Src\Newtonsoft.Json.Portable.sln /all /log:bin\Newtonsoft.Json-1.0.0.txt | Out-Null
 .\bin\StyleCopTester-Roslyn.1.1.0\StyleCopTester.exe bin\Newtonsoft.Json\Src\Newtonsoft.Json.Portable.sln /all /log:bin\Newtonsoft.Json-1.1.0.txt | Out-Null
 .\bin\StyleCopTester-Roslyn.1.1.1\StyleCopTester.exe bin\Newtonsoft.Json\Src\Newtonsoft.Json.Portable.sln /all /log:bin\Newtonsoft.Json-1.1.1.txt | Out-Null
+
+#
+# Testing EWSoftware/SHFB@75fa33c7
+#
+
+git clone https://github.com/EWSoftware/SHFB.git bin\SHFB
+Push-Location
+cd bin\SHFB
+git checkout 75fa33c7ca79da38b1e40da2e41f2ada0226f2d4
+Pop-Location
+
+&$NuGet restore bin\SHFB\SHFB\Source\SandcastleTools.sln -Verbosity quiet
+
+.\bin\StyleCopTester-Roslyn.1.0.0\StyleCopTester.exe bin\SHFB\SHFB\Source\SandcastleTools.sln /all /log:bin\SHFB-1.0.0.txt | Out-Null
+.\bin\StyleCopTester-Roslyn.1.1.0\StyleCopTester.exe bin\SHFB\SHFB\Source\SandcastleTools.sln /all /log:bin\SHFB-1.1.0.txt | Out-Null
+.\bin\StyleCopTester-Roslyn.1.1.1\StyleCopTester.exe bin\SHFB\SHFB\Source\SandcastleTools.sln /all /log:bin\SHFB-1.1.1.txt | Out-Null
