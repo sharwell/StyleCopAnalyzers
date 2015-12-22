@@ -27,8 +27,51 @@ namespace StyleCop.Analyzers
         private static Tuple<WeakReference<Compilation>, ConcurrentDictionary<SyntaxTree, bool>> generatedHeaderCache
             = Tuple.Create(new WeakReference<Compilation>(null), default(ConcurrentDictionary<SyntaxTree, bool>));
 
-        private static Tuple<WeakReference<Compilation>, StrongBox<StyleCopSettings>> settingsCache
-            = Tuple.Create(new WeakReference<Compilation>(null), default(StrongBox<StyleCopSettings>));
+        private static Tuple<WeakReference<Compilation>, ConcurrentDictionary<int, StrongBox<StyleCopSettings>>> settingsCache
+            = Tuple.Create(new WeakReference<Compilation>(null), default(ConcurrentDictionary<int, StrongBox<StyleCopSettings>>));
+
+        private static int cacheAllDocuments;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether <see cref="generatedHeaderCache"/> and <see cref="settingsCache"/>
+        /// are decoupled from specific compilations, and instead track all instances.
+        /// </summary>
+        /// <value>
+        /// <see langword="true"/> to track all instances in the generated header and settings caches; otherwise,
+        /// <see langword="false"/> to only track instances for the most recently requested compilation.
+        /// </value>
+        internal static bool CacheAllDocuments
+        {
+            get
+            {
+                return Volatile.Read(ref cacheAllDocuments) != 0;
+            }
+
+            set
+            {
+                bool resetCaches = false;
+                if (value)
+                {
+                    resetCaches = Interlocked.Increment(ref cacheAllDocuments) == 1;
+                }
+                else
+                {
+                    int currentValue = cacheAllDocuments;
+                    while (Interlocked.CompareExchange(ref cacheAllDocuments, Math.Max(0, currentValue - 1), currentValue) != currentValue)
+                    {
+                        currentValue = cacheAllDocuments;
+                    }
+
+                    resetCaches = currentValue == 1;
+                }
+
+                if (resetCaches)
+                {
+                    generatedHeaderCache = Tuple.Create(new WeakReference<Compilation>(null), default(ConcurrentDictionary<SyntaxTree, bool>));
+                    settingsCache = Tuple.Create(new WeakReference<Compilation>(null), default(ConcurrentDictionary<int, StrongBox<StyleCopSettings>>));
+                }
+            }
+        }
 
         /// <summary>
         /// Register an action to be executed at completion of parsing of a code document. A syntax tree action reports
@@ -104,6 +147,25 @@ namespace StyleCop.Analyzers
         public static ConcurrentDictionary<SyntaxTree, bool> GetOrCreateGeneratedDocumentCache(this Compilation compilation)
         {
             var headerCache = generatedHeaderCache;
+            bool trackAllInstances = CacheAllDocuments;
+            int compilationId = RuntimeHelpers.GetHashCode(compilation);
+
+            if (trackAllInstances)
+            {
+                var value = headerCache.Item2;
+                if (value == null)
+                {
+                    value = new ConcurrentDictionary<SyntaxTree, bool>();
+                    var replacementCache = Tuple.Create(new WeakReference<Compilation>(null), value);
+                    var prior = Interlocked.CompareExchange(ref generatedHeaderCache, replacementCache, headerCache);
+                    if (prior.Item2 != null)
+                    {
+                        value = prior.Item2;
+                    }
+                }
+
+                return value;
+            }
 
             Compilation cachedCompilation;
             if (!headerCache.Item1.TryGetTarget(out cachedCompilation) || cachedCompilation != compilation)
@@ -138,11 +200,35 @@ namespace StyleCop.Analyzers
         public static StrongBox<StyleCopSettings> GetOrCreateStyleCopSettingsCache(this Compilation compilation)
         {
             var currentSettingsCache = settingsCache;
+            bool trackAllInstances = CacheAllDocuments;
+            int compilationId = RuntimeHelpers.GetHashCode(compilation);
+
+            if (trackAllInstances)
+            {
+                var value = currentSettingsCache.Item2;
+                if (currentSettingsCache.Item2 == null)
+                {
+                    value = new ConcurrentDictionary<int, StrongBox<StyleCopSettings>>();
+                    var replacementCache = Tuple.Create(new WeakReference<Compilation>(null), value);
+                    var prior = Interlocked.CompareExchange(ref settingsCache, replacementCache, currentSettingsCache);
+                    if (prior.Item2 != null)
+                    {
+                        value = prior.Item2;
+                    }
+                }
+
+                return value.GetOrAdd(compilationId, key => new StrongBox<StyleCopSettings>(null));
+            }
 
             Compilation cachedCompilation;
             if (!currentSettingsCache.Item1.TryGetTarget(out cachedCompilation) || cachedCompilation != compilation)
             {
-                var replacementCache = Tuple.Create(new WeakReference<Compilation>(compilation), new StrongBox<StyleCopSettings>(null));
+                var value = new ConcurrentDictionary<int, StrongBox<StyleCopSettings>>
+                {
+                    [compilationId] = new StrongBox<StyleCopSettings>(null)
+                };
+
+                var replacementCache = Tuple.Create(new WeakReference<Compilation>(compilation), value);
                 while (true)
                 {
                     var prior = Interlocked.CompareExchange(ref settingsCache, replacementCache, currentSettingsCache);
@@ -160,7 +246,7 @@ namespace StyleCop.Analyzers
                 }
             }
 
-            return currentSettingsCache.Item2;
+            return currentSettingsCache.Item2[compilationId];
         }
 
         /// <summary>
