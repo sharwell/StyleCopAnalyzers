@@ -27,8 +27,8 @@ namespace StyleCop.Analyzers
         private static Tuple<WeakReference<Compilation>, ConcurrentDictionary<SyntaxTree, bool>> generatedHeaderCache
             = Tuple.Create(new WeakReference<Compilation>(null), default(ConcurrentDictionary<SyntaxTree, bool>));
 
-        private static Tuple<WeakReference<Compilation>, ConcurrentDictionary<int, StrongBox<StyleCopSettings>>> settingsCache
-            = Tuple.Create(new WeakReference<Compilation>(null), default(ConcurrentDictionary<int, StrongBox<StyleCopSettings>>));
+        private static Tuple<WeakReference<Compilation>, ConcurrentDictionary<SyntaxTree, StyleCopSettings>> settingsCache
+            = Tuple.Create(new WeakReference<Compilation>(null), default(ConcurrentDictionary<SyntaxTree, StyleCopSettings>));
 
         private static int cacheAllDocuments;
 
@@ -68,7 +68,7 @@ namespace StyleCop.Analyzers
                 if (resetCaches)
                 {
                     generatedHeaderCache = Tuple.Create(new WeakReference<Compilation>(null), default(ConcurrentDictionary<SyntaxTree, bool>));
-                    settingsCache = Tuple.Create(new WeakReference<Compilation>(null), default(ConcurrentDictionary<int, StrongBox<StyleCopSettings>>));
+                    settingsCache = Tuple.Create(new WeakReference<Compilation>(null), default(ConcurrentDictionary<SyntaxTree, StyleCopSettings>));
                 }
             }
         }
@@ -112,7 +112,7 @@ namespace StyleCop.Analyzers
         {
             Compilation compilation = context.Compilation;
             ConcurrentDictionary<SyntaxTree, bool> cache = GetOrCreateGeneratedDocumentCache(compilation);
-            StrongBox<StyleCopSettings> settingsCache = GetOrCreateStyleCopSettingsCache(compilation);
+            ConcurrentDictionary<SyntaxTree, StyleCopSettings> settingsCache = GetOrCreateStyleCopSettingsCache(compilation);
 
             context.RegisterSyntaxTreeAction(
                 c =>
@@ -126,12 +126,11 @@ namespace StyleCop.Analyzers
                     // MSBuild metadata, if analyzers have access to it.
                     //// TODO: code here
 
-                    StyleCopSettings settings = settingsCache.Value;
-                    if (settings == null)
+                    StyleCopSettings settings;
+                    if (!settingsCache.TryGetValue(c.Tree, out settings))
                     {
                         StyleCopSettings updatedSettings = SettingsHelper.GetStyleCopSettings(c.Options, c.CancellationToken);
-                        StyleCopSettings previous = Interlocked.CompareExchange(ref settingsCache.Value, updatedSettings, null);
-                        settings = previous ?? updatedSettings;
+                        settings = settingsCache.GetOrAdd(c.Tree, updatedSettings);
                     }
 
                     action(c, settings);
@@ -197,56 +196,51 @@ namespace StyleCop.Analyzers
         /// </summary>
         /// <param name="compilation">The compilation which the cache applies to.</param>
         /// <returns>A <see cref="StrongBox{T}"/> which can store a <see cref="StyleCopSettings"/> instance.</returns>
-        public static StrongBox<StyleCopSettings> GetOrCreateStyleCopSettingsCache(this Compilation compilation)
+        public static ConcurrentDictionary<SyntaxTree, StyleCopSettings> GetOrCreateStyleCopSettingsCache(this Compilation compilation)
         {
-            var currentSettingsCache = settingsCache;
+            var headerCache = settingsCache;
             bool trackAllInstances = CacheAllDocuments;
             int compilationId = RuntimeHelpers.GetHashCode(compilation);
 
             if (trackAllInstances)
             {
-                var value = currentSettingsCache.Item2;
-                if (currentSettingsCache.Item2 == null)
+                var value = headerCache.Item2;
+                if (value == null)
                 {
-                    value = new ConcurrentDictionary<int, StrongBox<StyleCopSettings>>();
+                    value = new ConcurrentDictionary<SyntaxTree, StyleCopSettings>();
                     var replacementCache = Tuple.Create(new WeakReference<Compilation>(null), value);
-                    var prior = Interlocked.CompareExchange(ref settingsCache, replacementCache, currentSettingsCache);
+                    var prior = Interlocked.CompareExchange(ref settingsCache, replacementCache, headerCache);
                     if (prior.Item2 != null)
                     {
                         value = prior.Item2;
                     }
                 }
 
-                return value.GetOrAdd(compilationId, key => new StrongBox<StyleCopSettings>(null));
+                return value;
             }
 
             Compilation cachedCompilation;
-            if (!currentSettingsCache.Item1.TryGetTarget(out cachedCompilation) || cachedCompilation != compilation)
+            if (!headerCache.Item1.TryGetTarget(out cachedCompilation) || cachedCompilation != compilation)
             {
-                var value = new ConcurrentDictionary<int, StrongBox<StyleCopSettings>>
-                {
-                    [compilationId] = new StrongBox<StyleCopSettings>(null)
-                };
-
-                var replacementCache = Tuple.Create(new WeakReference<Compilation>(compilation), value);
+                var replacementCache = Tuple.Create(new WeakReference<Compilation>(compilation), new ConcurrentDictionary<SyntaxTree, StyleCopSettings>());
                 while (true)
                 {
-                    var prior = Interlocked.CompareExchange(ref settingsCache, replacementCache, currentSettingsCache);
-                    if (prior == currentSettingsCache)
+                    var prior = Interlocked.CompareExchange(ref settingsCache, replacementCache, headerCache);
+                    if (prior == headerCache)
                     {
-                        currentSettingsCache = replacementCache;
+                        headerCache = replacementCache;
                         break;
                     }
 
-                    currentSettingsCache = prior;
-                    if (currentSettingsCache.Item1.TryGetTarget(out cachedCompilation) && cachedCompilation == compilation)
+                    headerCache = prior;
+                    if (headerCache.Item1.TryGetTarget(out cachedCompilation) && cachedCompilation == compilation)
                     {
                         break;
                     }
                 }
             }
 
-            return currentSettingsCache.Item2[compilationId];
+            return headerCache.Item2;
         }
 
         /// <summary>
@@ -341,7 +335,7 @@ namespace StyleCop.Analyzers
         {
             Compilation compilation = context.Compilation;
             ConcurrentDictionary<SyntaxTree, bool> cache = GetOrCreateGeneratedDocumentCache(compilation);
-            StrongBox<StyleCopSettings> settingsCache = GetOrCreateStyleCopSettingsCache(compilation);
+            ConcurrentDictionary<SyntaxTree, StyleCopSettings> settingsCache = GetOrCreateStyleCopSettingsCache(compilation);
 
             context.RegisterSyntaxNodeAction(
                 c =>
@@ -355,12 +349,11 @@ namespace StyleCop.Analyzers
                     // MSBuild metadata, if analyzers have access to it.
                     //// TODO: code here
 
-                    StyleCopSettings settings = settingsCache.Value;
-                    if (settings == null)
+                    StyleCopSettings settings;
+                    if (!settingsCache.TryGetValue(c.Node.SyntaxTree, out settings))
                     {
                         StyleCopSettings updatedSettings = SettingsHelper.GetStyleCopSettings(c.Options, c.CancellationToken);
-                        StyleCopSettings previous = Interlocked.CompareExchange(ref settingsCache.Value, updatedSettings, null);
-                        settings = previous ?? updatedSettings;
+                        settings = settingsCache.GetOrAdd(c.Node.SyntaxTree, updatedSettings);
                     }
 
                     action(c, settings);
