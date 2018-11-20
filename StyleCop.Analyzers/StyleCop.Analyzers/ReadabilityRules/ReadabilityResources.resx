@@ -549,4 +549,22 @@
   <data name="SX1101Title" xml:space="preserve">
     <value>Do not prefix local calls with 'this.'</value>
   </data>
+  <data name="SA1141Description" xml:space="preserve">
+    <value>Projects using C# 7 and newer should use the new tuple syntax when applicable.</value>
+  </data>
+  <data name="SA1141MessageFormat" xml:space="preserve">
+    <value>Use tuple syntax</value>
+  </data>
+  <data name="SA1141Title" xml:space="preserve">
+    <value>Use tuple syntax</value>
+  </data>
+  <data name="SA1142Description" xml:space="preserve">
+    <value>Reference tuple elements by name</value>
+  </data>
+  <data name="SA1142MessageFormat" xml:space="preserve">
+    <value>Reference tuple element by name</value>
+  </data>
+  <data name="SA1142Title" xml:space="preserve">
+    <value>Reference tuple elements by name</value>
+  </data>
 </root>

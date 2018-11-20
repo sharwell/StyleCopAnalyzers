@@ -168,5 +168,59 @@ namespace StyleCop.Analyzers.NamingRules {
                 return ResourceManager.GetString("SA1314Title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The name of a tuple element in C# does not begin with a lower-case letter..
+        /// </summary>
+        internal static string SA1316Description {
+            get {
+                return ResourceManager.GetString("SA1316Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tuple element &apos;{0}&apos; should begin with lower-case letter.
+        /// </summary>
+        internal static string SA1316MessageFormat {
+            get {
+                return ResourceManager.GetString("SA1316MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tuple element names should begin with lower-case letter.
+        /// </summary>
+        internal static string SA1316Title {
+            get {
+                return ResourceManager.GetString("SA1316Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The name of tuple elements in a type or member signature should match the names appearing in the original definition..
+        /// </summary>
+        internal static string SA1317Description {
+            get {
+                return ResourceManager.GetString("SA1317Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tuple element &apos;{0}&apos; should be named &apos;{1}&apos; to match the inherited definition.
+        /// </summary>
+        internal static string SA1317MessageFormat {
+            get {
+                return ResourceManager.GetString("SA1317MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tuple elements should match inherited names.
+        /// </summary>
+        internal static string SA1317Title {
+            get {
+                return ResourceManager.GetString("SA1317Title", resourceCulture);
+            }
+        }
     }
 }

@@ -153,4 +153,22 @@
   <data name="SA1314Title" xml:space="preserve">
     <value>Type parameter names should begin with T</value>
   </data>
+  <data name="SA1316Description" xml:space="preserve">
+    <value>The name of a tuple element in C# does not begin with a lower-case letter.</value>
+  </data>
+  <data name="SA1316MessageFormat" xml:space="preserve">
+    <value>Tuple element '{0}' should begin with lower-case letter</value>
+  </data>
+  <data name="SA1316Title" xml:space="preserve">
+    <value>Tuple element names should begin with lower-case letter</value>
+  </data>
+  <data name="SA1317Description" xml:space="preserve">
+    <value>The name of tuple elements in a type or member signature should match the names appearing in the original definition.</value>
+  </data>
+  <data name="SA1317MessageFormat" xml:space="preserve">
+    <value>Tuple element '{0}' should be named '{1}' to match the inherited definition</value>
+  </data>
+  <data name="SA1317Title" xml:space="preserve">
+    <value>Tuple elements should match inherited names</value>
+  </data>
 </root>
