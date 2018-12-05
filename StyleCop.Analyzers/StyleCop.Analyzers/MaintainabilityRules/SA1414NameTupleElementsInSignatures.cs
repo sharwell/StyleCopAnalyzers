@@ -3,9 +3,12 @@
 
 namespace StyleCop.Analyzers.MaintainabilityRules
 {
+    using System;
     using System.Collections.Immutable;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
+    using StyleCop.Analyzers.Helpers;
+    using StyleCop.Analyzers.Lightup;
 
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class SA1414NameTupleElementsInSignatures : DiagnosticAnalyzer
@@ -22,6 +25,8 @@ namespace StyleCop.Analyzers.MaintainabilityRules
         private static readonly DiagnosticDescriptor Descriptor =
             new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, AnalyzerCategory.ReadabilityRules, DiagnosticSeverity.Warning, AnalyzerConstants.DisabledNoTests, Description, HelpLink);
 
+        private static readonly Action<SyntaxNodeAnalysisContext> TupleElementAction = HandleTupleElement;
+
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
             ImmutableArray.Create(Descriptor);
@@ -31,6 +36,30 @@ namespace StyleCop.Analyzers.MaintainabilityRules
         {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
+
+            context.RegisterSyntaxNodeAction(TupleElementAction, SyntaxKindEx.TupleElement);
+        }
+
+        private static void HandleTupleElement(SyntaxNodeAnalysisContext context)
+        {
+            var tupleElement = (TupleElementSyntaxWrapper)context.Node;
+            if (!tupleElement.Identifier.IsMissingOrDefault())
+            {
+                return;
+            }
+
+            if (!IsInOriginalDefinition(tupleElement, context.SemanticModel))
+            {
+                return;
+            }
+
+            context.ReportDiagnostic(Diagnostic.Create(Descriptor, tupleElement.SyntaxNode.GetLocation()));
+        }
+
+        private static bool IsInOriginalDefinition(TupleElementSyntaxWrapper tupleElement, SemanticModel semanticModel)
+        {
+            // TODO: Filter cases where a tuple type appears in an overriding or implementing signature
+            return true;
         }
     }
 }

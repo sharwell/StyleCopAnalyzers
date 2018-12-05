@@ -3,9 +3,12 @@
 
 namespace StyleCop.Analyzers.ReadabilityRules
 {
+    using System;
     using System.Collections.Immutable;
     using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
+    using StyleCop.Analyzers.Helpers;
 
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class SA1142ReferenceTupleElementsByName : DiagnosticAnalyzer
@@ -22,6 +25,8 @@ namespace StyleCop.Analyzers.ReadabilityRules
 
         private static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, AnalyzerCategory.ReadabilityRules, DiagnosticSeverity.Warning, AnalyzerConstants.DisabledNoTests, Description, HelpLink);
 
+        private static readonly Action<SyntaxNodeAnalysisContext> SimpleMemberAccessExpressionAction = HandleSimpleMemberAccessExpression;
+
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
             ImmutableArray.Create(Descriptor);
@@ -31,6 +36,46 @@ namespace StyleCop.Analyzers.ReadabilityRules
         {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
+        }
+
+        private static void HandleSimpleMemberAccessExpression(SyntaxNodeAnalysisContext context)
+        {
+            var memberAccessExpression = (MemberAccessExpressionSyntax)context.Node;
+            if (!(memberAccessExpression.Name is IdentifierNameSyntax identifierName))
+            {
+                return;
+            }
+
+            if (identifierName.Identifier.IsMissingOrDefault())
+            {
+                return;
+            }
+
+            var name = identifierName.Identifier.ValueText;
+            if (string.IsNullOrEmpty(name))
+            {
+                return;
+            }
+
+            if (name.Equals("Rest", StringComparison.Ordinal))
+            {
+            }
+            else if (name.StartsWith("Item", StringComparison.Ordinal))
+            {
+                for (int i = "Item".Length; i < name.Length; i++)
+                {
+                    if (name[i] < '0' || name[i] > '9')
+                    {
+                        // Name doesn't match ItemXX for some integer XX
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                // Name doesn't match the known ValueTuple field names
+                return;
+            }
         }
     }
 }

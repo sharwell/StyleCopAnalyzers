@@ -3,9 +3,14 @@
 
 namespace StyleCop.Analyzers.ReadabilityRules
 {
+    using System;
     using System.Collections.Immutable;
     using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
+    using StyleCop.Analyzers.Helpers;
+    using StyleCop.Analyzers.Lightup;
 
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class SA1141UseTupleSyntax : DiagnosticAnalyzer
@@ -22,6 +27,11 @@ namespace StyleCop.Analyzers.ReadabilityRules
 
         private static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, AnalyzerCategory.ReadabilityRules, DiagnosticSeverity.Warning, AnalyzerConstants.DisabledNoTests, Description, HelpLink);
 
+        private static readonly Action<SyntaxNodeAnalysisContext> InvocationExpressionAction = HandleInvocationExpression;
+        private static readonly Action<SyntaxNodeAnalysisContext> ObjectCreationExpressionAction = HandleObjectCreationExpression;
+        private static readonly Action<SyntaxNodeAnalysisContext> GenericNameAction = HandleGenericName;
+        private static readonly Action<SyntaxNodeAnalysisContext> QualifiedNameAction = HandleQualifiedName;
+
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
             ImmutableArray.Create(Descriptor);
@@ -31,6 +41,31 @@ namespace StyleCop.Analyzers.ReadabilityRules
         {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
+
+            context.RegisterSyntaxNodeAction(InvocationExpressionAction, SyntaxKind.InvocationExpression);
+            context.RegisterSyntaxNodeAction(ObjectCreationExpressionAction, SyntaxKind.ObjectCreationExpression);
+            context.RegisterSyntaxNodeAction(GenericNameAction, SyntaxKind.GenericName);
+            context.RegisterSyntaxNodeAction(QualifiedNameAction, SyntaxKind.QualifiedName);
+        }
+
+        private static void HandleInvocationExpression(SyntaxNodeAnalysisContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void HandleObjectCreationExpression(SyntaxNodeAnalysisContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void HandleGenericName(SyntaxNodeAnalysisContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void HandleQualifiedName(SyntaxNodeAnalysisContext context)
+        {
+            throw new NotImplementedException();
         }
     }
 }

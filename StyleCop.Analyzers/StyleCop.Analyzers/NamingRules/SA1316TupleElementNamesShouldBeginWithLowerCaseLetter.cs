@@ -3,9 +3,14 @@
 
 namespace StyleCop.Analyzers.NamingRules
 {
+    using System;
     using System.Collections.Immutable;
     using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
+    using StyleCop.Analyzers.Helpers;
+    using StyleCop.Analyzers.Lightup;
 
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class SA1316TupleElementNamesShouldBeginWithLowerCaseLetter : DiagnosticAnalyzer
@@ -22,6 +27,9 @@ namespace StyleCop.Analyzers.NamingRules
         private static readonly DiagnosticDescriptor Descriptor =
             new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, AnalyzerCategory.NamingRules, DiagnosticSeverity.Warning, AnalyzerConstants.DisabledNoTests, Description, HelpLink);
 
+        private static readonly Action<SyntaxNodeAnalysisContext> ArgumentAction = HandleArgument;
+        private static readonly Action<SyntaxNodeAnalysisContext> TupleElementAction = HandleTupleElement;
+
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
             ImmutableArray.Create(Descriptor);
@@ -31,6 +39,58 @@ namespace StyleCop.Analyzers.NamingRules
         {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
+
+            context.RegisterSyntaxNodeAction(ArgumentAction, SyntaxKind.Argument);
+            context.RegisterSyntaxNodeAction(TupleElementAction, SyntaxKindEx.TupleElement);
+        }
+
+        private static void HandleArgument(SyntaxNodeAnalysisContext context)
+        {
+            var argument = (ArgumentSyntax)context.Node;
+            if (argument.NameColon?.Name is null)
+            {
+                return;
+            }
+
+            CheckTupleElementName(context, argument.NameColon.Name.Identifier);
+        }
+
+        private static void HandleTupleElement(SyntaxNodeAnalysisContext context)
+        {
+            var tupleElement = (TupleElementSyntaxWrapper)context.Node;
+            CheckTupleElementName(context, tupleElement.Identifier);
+        }
+
+        private static void CheckTupleElementName(SyntaxNodeAnalysisContext context, SyntaxToken identifier)
+        {
+            if (identifier.IsMissingOrDefault())
+            {
+                return;
+            }
+
+            string name = identifier.ValueText;
+            if (string.IsNullOrEmpty(name) || char.IsLower(name[0]))
+            {
+                return;
+            }
+
+            if (!IsInOriginalDefinition(identifier, context.SemanticModel))
+            {
+                return;
+            }
+
+            context.ReportDiagnostic(Diagnostic.Create(Descriptor, identifier.GetLocation(), name));
+        }
+
+        private static bool IsInOriginalDefinition(SyntaxToken tupleElementName, SemanticModel semanticModel)
+        {
+            if (!tupleElementName.Parent.IsKind(SyntaxKindEx.TupleElement))
+            {
+                return true;
+            }
+
+            // TODO: Filter cases where a tuple type appears in an overriding or implementing signature
+            return true;
         }
     }
 }
